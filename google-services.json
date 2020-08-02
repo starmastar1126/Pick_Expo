@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "255238314976",
+    "firebase_url": "https://pick-aa5e2.firebaseio.com",
+    "project_id": "pick-aa5e2",
+    "storage_bucket": "pick-aa5e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255238314976:android:f55228f5811f9ec753e985",
+        "android_client_info": {
+          "package_name": "com.pick.technovierapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "255238314976-l063tsikif1d8it445r56moobi45b5ae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeRlySzKb6JBm1x_CZ1-b6c9ty_bXERHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "255238314976-l063tsikif1d8it445r56moobi45b5ae.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "255238314976-8ouov7lpr3akkjo4n5p4aensnanut5uv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pick.technovierapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
