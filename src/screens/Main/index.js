@@ -12,7 +12,6 @@ import { themes, colors } from '@constants/themes';
 import { images, icons } from '@constants/assets';
 import API, { setClientToken } from '@utils/API';
 import i18n from '@utils/i18n';
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 class Main extends Component {
   constructor(props) {
@@ -53,37 +52,34 @@ class Main extends Component {
                 />
               </Item>
             </View>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Popular Cars')}</Text>
-              <TouchableOpacity>
-                <Text style={{ fontSize: 14 }}>{i18n.translate('View all')}</Text>
-              </TouchableOpacity>
+            <View style={styles.Category}>
+              <Categoryheader head1="Popular" head2="Cars" />
             </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Carcard />
-              <Carcard />
-              <Carcard />
-            </ScrollView>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Top Host')}</Text>
-              <TouchableOpacity>
-                <Text style={{ fontSize: 14 }}>{i18n.translate('View all')}</Text>
-              </TouchableOpacity>
+            <View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={{ flexDirection: "row" }}>
+                  <Carcard />
+                  <Carcard />
+                  <Carcard />
+                </View>
+              </ScrollView>
             </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Tophost />
-              <Tophost />
-              <Tophost />
-            </ScrollView>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Todays Feed')}</Text>
-              <TouchableOpacity>
-                <Text style={{ fontSize: 14 }}>{i18n.translate('View all')}</Text>
-              </TouchableOpacity>
+            <View style={styles.Category}>
+              <Categoryheader head1="Top" head2="Host" />
             </View>
+            <View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Tophost />
+                <Tophost />
+                <Tophost />
+              </ScrollView>
+            </View>
+
+            <View style={[styles.Category, { marginTop: 10 }]}>
+              <Categoryheader head1="Today's" head2="Feed" />
+            </View>
+
             <View>
               <Image
                 source={require("@assets/images/car.jpg")}
@@ -94,27 +90,30 @@ class Main extends Component {
               <Text style={styles.cartext2}>Ferrari New Launch 2020</Text>
             </View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Popular Destination')}</Text>
-              <TouchableOpacity>
-                <Text style={{ fontSize: 14 }}>{i18n.translate('View all')}</Text>
-              </TouchableOpacity>
+            <View style={[styles.Category, { marginTop: 10 }]}>
+              <Categoryheader head1="Popular" head2="Destination" />
             </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Destination />
-              <Destination />
-              <Destination />
-            </ScrollView>
+            <View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Destination />
+                <Destination />
+                <Destination />
+              </ScrollView>
+            </View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Start earning today')}</Text>
+            <View style={[styles.Category, { marginTop: 10 }]}>
+              <Categoryheader head1="Start earning " head2="today" />
             </View>
-            <Earningcard />
+            <View>
+              <Earningcard />
+            </View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginTop: 20, marginBottom: 5 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>{i18n.translate('Go for ride')}</Text>
+            <View style={[styles.Category, { marginTop: 10 }]}>
+              <Categoryheader head1="Go for " head2="ride" />
             </View>
-            <Earningcard />
+            <View>
+              <Earningcard />
+            </View>
           </ScrollView>
         </Content>
       </Container>
