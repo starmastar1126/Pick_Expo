@@ -8,7 +8,7 @@ const PayItem = () => {
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <View style={styles.CardViewComp}>
           <Image
-            source={require("../assets/visa.png")}
+            source={require("@assets/images/visa.png")}
             style={{ width: 30, height: 30 }}
           />
           <TouchableOpacity>
@@ -19,7 +19,7 @@ const PayItem = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.CardViewComp}>
-          <Image source={require("../assets/paypal.png")} />
+          <Image source={require("@assets/images/paypal.png")} />
           <TouchableOpacity>
             <Text style={{ marginLeft: 10, fontWeight: "300" }}>Paypal</Text>
           </TouchableOpacity>
@@ -33,7 +33,7 @@ const PayItem = () => {
         }}
       >
         <View style={styles.CardViewComp}>
-          <Image source={require("../assets/payoneer.png")} />
+          <Image source={require("@assets/images/payoneer.png")} />
           <TouchableOpacity>
             <Text style={{ marginLeft: 10, fontWeight: "300" }}>Payoneer</Text>
           </TouchableOpacity>

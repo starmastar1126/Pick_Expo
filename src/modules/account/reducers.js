@@ -2,7 +2,7 @@ import types from './types';
 
 const initialState = {
     logged: false,
-    user: null,
+    user_info: null,
 };
 
 export default function accountReducer(state = initialState, action) {
@@ -11,7 +11,13 @@ export default function accountReducer(state = initialState, action) {
             return {
                 ...state,
                 logged: true,
-                user: action.payload,
+                user_info: action.payload,
+            };
+        case types.SIGN_OUT:
+            return {
+                ...state,
+                logged: false,
+                user_info: initialState
             };
         default:
             return state;

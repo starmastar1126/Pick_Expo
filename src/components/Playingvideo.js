@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import { Video } from "expo-av";
-const Width = Dimensions.get("screen").width;
 import { AntDesign } from "@expo/vector-icons";
+const Width = Dimensions.get("screen").width;
+
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { signOut } from "@modules/account/actions";
+import configs from '@constants/configs';
+import { themes, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
+import axios, { removeClientToken } from '@utils/axios';
+import i18n from '@utils/i18n';
 
 const Playingvideo = () => {
   const [play, setplay] = useState(false);
@@ -50,8 +54,6 @@ const Playingvideo = () => {
   );
 };
 
-export default Playingvideo;
-
 const styles = StyleSheet.create({
   video: {
     width: Width - 20,
@@ -60,3 +62,5 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
 });
+
+export default Playingvideo;

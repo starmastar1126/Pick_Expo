@@ -1,12 +1,18 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import { Button } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
-import * as Localization from "expo-localization";
-import i18n from "i18n-js";
-import WalletHeader from "../../components/WalletHeader";
 import { LineChart } from "react-native-chart-kit";
-import i8 from "../../services/i18n";
+
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { signOut } from "@modules/account/actions";
+import { Loading } from '@components';
+import configs from '@constants/configs';
+import { themes, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
+import axios, { removeClientToken } from '@utils/axios';
+import i18n from '@utils/i18n';
 
 const WIDTH = Dimensions.get("window").width;
 
@@ -33,11 +39,27 @@ const data = {
   ],
 };
 
-export class Available extends Component {
+class Available extends Component {
+  renderHeading() {
+    return (
+      <View style={{ flexDirection: 'row', width: wp('100.0%'), height: 50 }}>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-start', width: 80, padding: 10 }}>
+          <Icon name="keyboard-backspace" type="material" size={24} onPress={() => this.props.navigation.goBack()} />
+        </View>
+        <View style={{ width: wp('100.0%') - 160, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: "300", marginTop: 5 }}>
+            Wallet
+          </Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-end', width: 80, padding: 10 }}>
+        </View>
+      </View>
+    );
+  };
   render() {
     return (
       <View style={{ backgroundColor: "white", flex: 1 }}>
-        <WalletHeader Heading={"Available"} />
+        {this.renderHeading()}
         <View style={{ left: -30, marginTop: 60 }}>
           <LineChart
             data={data}
@@ -57,7 +79,7 @@ export class Available extends Component {
         <View style={styles.searchSection}>
           <View style={styles.txtView}>
             <Text style={{ fontSize: 13, fontWeight: "300" }}>
-              {i18n.t("Available Funds")}
+              {i18n.translate("Available Funds")}
             </Text>
             <Text style={{ fontSize: 18, fontWeight: "400", marginLeft: 3 }}>
               SAR300,00.00
@@ -65,8 +87,8 @@ export class Available extends Component {
           </View>
 
           <View style={styles.btnView}>
-            <Button rounded style={styles.btn}>
-              <Text style={{ color: "white" }}>{i18n.t("Withdraw")}</Text>
+            <Button rounded style={styles.btn} onPress={()=> this.props.navigation.navigate('Withdraw')}>
+              <Text style={{ color: "white" }}>{i18n.translate("Withdraw")}</Text>
             </Button>
           </View>
         </View>
@@ -74,8 +96,6 @@ export class Available extends Component {
     );
   }
 }
-
-export default Available;
 
 const styles = StyleSheet.create({
   searchSection: {
@@ -115,3 +135,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export default Available;

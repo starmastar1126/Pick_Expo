@@ -1,128 +1,111 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Platform, TouchableOpacity } from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, StyleSheet, Platform } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Icon } from 'react-native-elements';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { Heading, Categoryheader, Carcard, Tophost, Destination, Earningcard, } from '@components';
-import configs from '@constants/configs';
-import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
-import API, { setClientToken } from '@utils/API';
-import i18n from '@utils/i18n';
+import { Loading } from '@components';
+import { isEmpty } from '@constants/functions';
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
 
-const API_KEY = "AIzaSyB4OQqx5QLNa_cnz862r8abRec-ACIgt5A";
+const API_KEY = "AIzaSyCXU9mYBzIVbb3ljhHbwWj1IHAP373_RO4";
+// const API_KEY = "AIzaSyB4OQqx5QLNa_cnz862r8abRec-ACIgt5A";
 
 const homePlace = {
-  description: "Home",
-  lat: 48.8152937,
-  lng: 2.4597668,
+  description: 'Home',
+  geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
+};
+const workPlace = {
+  description: 'Work',
+  geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
 };
 
-const ListItem = ({ Place }) => {
-  return (
-    <View>
-      <TouchableOpacity>
-        <View style={styles.listbtn}>
-          <MaterialCommunityIcons
-            name="fireplace-off"
-            size={24}
-            color={colors.BLUE.TAB}
-          />
-          <Text style={{ marginLeft: 25 }}>{Place}</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-export class Search extends Component {
+class Search extends Component {
   constructor() {
     super();
     this.state = {
       place: "",
     };
   }
+
+  renderHeading() {
+    return (
+      <View style={{ flexDirection: 'row', width: wp('100.0%'), height: 50 }}>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-start', width: 80, padding: 10 }}>
+          <Icon name="keyboard-backspace" type="material" size={24} onPress={() => this.props.navigation.goBack()} />
+        </View>
+        <View style={{ width: wp('100.0%') - 160, justifyContent: 'center', alignItems: 'center' }}>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-end', width: 80, padding: 10 }}>
+          <Icon name="pencil-minus-outline" type="material-community" size={24} />
+        </View>
+      </View>
+    );
+  };
+
   render() {
     return (
       <View style={{ backgroundColor: "white", flex: 1 }}>
-        <View style={styles.head}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}
-          >
-            <Ionicons
-              name="ios-arrow-round-back"
-              size={32}
-              color={colors.GREY}
-              style={{ paddingBottom: 13 }}
-            />
-          </TouchableOpacity>
-          <View style={styles.searchSection}>
-            <GooglePlacesAutocomplete
-              placeholder="Search"
-              minLength={2} // minimum length of text to search
-              autoFocus={false}
-              fetchDetails={true}
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                console.log(data);
-                console.log(details);
-              }}
-              getDefaultValue={() => {
-                return ""; // text input default value
-              }}
-              query={{
-                // available options: https://developers.google.com/places/web-service/autocomplete
-                key: "AIzaSyDsmULnNLOEbWTXEZPBvwwJkZLBn-AIH2E",
-                language: "en", // language of the results
-              }}
-              styles={{
-                description: {
-                  fontWeight: "bold",
-                },
-                predefinedPlacesDescription: {
-                  color: "#1faadb",
-                },
-                listView: {
-                  color: "black", //To see where exactly the list is
-                  zIndex: 1000, //To popover the component outwards
-                  position: "absolute",
-                  top: 45,
-                },
-              }}
-              currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-              currentLocationLabel="Current location"
-              nearbyPlacesAPI="GooglePlacesSearch" // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-              GoogleReverseGeocodingQuery={
-                {
-                  // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-                }
-              }
-              GooglePlacesDetailsQuery={{
-                // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
-                fields: "formatted_address",
-              }}
-              filterReverseGeocodingByTypes={[
-                "locality",
-                "administrative_area_level_3",
-              ]} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-              predefinedPlacesAlwaysVisible={true}
-            />
-          </View>
-          <Text style={styles.suggest}>
-            Mall Otham Mall, Damman Mall 32236, Saudi Arabia
-          </Text>
-        </View>
-        <View style={styles.Recent}>
-          <Text style={{ paddingBottom: 15 }}>
-            {i18n.translate('Recently Visited')}
-          </Text>
-          <ListItem Place={"Al Fateer Beach in Al-Jubail"} />
-          <ListItem Place={"Al Beach in Al-Dubai"} />
-          <ListItem Place={"Al Fateer Beach in Al-Jubail Al Dubai"} />
-        </View>
+        {this.renderHeading()}
+        <View style={{width: wp('100.0%'), height: '100%', padding: 20}}>
+        <GooglePlacesAutocomplete
+          placeholder='Search'
+          minLength={2}
+          debounce={200}
+          autoFocus={true}
+          currentLocation={true}
+          currentLocationLabel="Current location"
+          enablePoweredByContainer={false}
+          returnKeyType={'search'}
+          listViewDisplayed='auto'
+          fetchDetails={true}
+          predefinedPlacesAlwaysVisible={true}
+          renderDescription={row => row.description}
+          textInputProps={{ clearButtonMode: 'while-editing' }}
+          renderDescription={(row) => row.description || row.formatted_address || row.name}
+          nearbyPlacesAPI='GoogleReverseGeocoding'
+          predefinedPlaces={[homePlace, workPlace]}
+          GooglePlacesDetailsQuery={{
+            fields: "geometry",
+          }}
+          query={{
+            key: API_KEY,
+            language: 'en'
+          }}
+          onPress={(data, details = null) => {
+            this.props.navigation.navigate('Map', { data: data, details: details });
+          }}
+          styles={{
+            currentLocation: {
+              color: colors.BLACK,
+            },
+            container: {
+              backgroundColor: colors.WHITE
+            },
+            textInputContainer: {
+              borderTopWidth: 0,
+              borderBottomWidth: 0,
+              width: '100%',
+              height: 45,
+              backgroundColor: colors.WHITE,
+              borderRadius: 10,
+              shadowColor: colors.BLACK,
+              shadowOffset: { width: 2, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 5,
+              elevation: 3,
+            },
+            description: {
+              height: hp('50%'),
+              color: colors.BLUE
+            },
+          }}
+        /></View>
       </View>
     );
   }
@@ -143,6 +126,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     padding: 15,
     width: "100%",
+    height: hp('50%'),
     justifyContent: "space-between",
   },
   searchicon: {

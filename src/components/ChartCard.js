@@ -1,11 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Button } from "native-base";
 import { LineChart } from "react-native-chart-kit";
-import { Container, Header, Content, Button } from "native-base";
-import * as Localization from "expo-localization";
-import i18n from "i18n-js";
-import i8 from "../services/i18n";
-i8.setI18nConfig();
+
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { signOut } from "@modules/account/actions";
+import configs from '@constants/configs';
+import { themes, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
+import axios, { removeClientToken } from '@utils/axios';
+import i18n from '@utils/i18n';
+
 const chartConfig = {
   color: (opacity = 0) => `rgba(5, 36, 130, ${opacity})`,
   backgroundColor: "white",
@@ -13,7 +20,8 @@ const chartConfig = {
   backgroundGradientFrom: "white",
   backgroundGradientTo: "white",
 };
-const ChartCard = ({ data, Name, Price }) => {
+
+const ChartCard = ({ data, Name, Price, onPress }) => {
   return (
     <View
       style={{
@@ -35,7 +43,7 @@ const ChartCard = ({ data, Name, Price }) => {
         ]}
       >
         <View style={{ position: "absolute", zIndex: 100, top: 10, left: 10 }}>
-          <Text style={{ fontWeight: "300" }}>{i18n.t(Name)}</Text>
+          <Text style={{ fontWeight: "300" }}>{i18n.translate(Name)}</Text>
           <Text style={{ fontSize: 10, fontWeight: "300", marginTop: 3 }}>
             {Price}
           </Text>
@@ -60,15 +68,14 @@ const ChartCard = ({ data, Name, Price }) => {
             withShadow={true}
           />
         </View>
-        <Button full primary style={styles.btn}>
-          <Text style={{ color: "white" }}>{i18n.t("Check Now")}</Text>
+        <Button full primary style={styles.btn} onPress={onPress}>
+          <Text style={{ color: "white" }}>{i18n.translate("Check Now")}</Text>
         </Button>
       </View>
     </View>
   );
 };
 
-export default ChartCard;
 const styles = StyleSheet.create({
   ChartSection: {
     flexDirection: "row",
@@ -97,3 +104,5 @@ const styles = StyleSheet.create({
     left: -1,
   },
 });
+
+export default ChartCard;

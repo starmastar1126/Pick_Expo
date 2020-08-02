@@ -1,45 +1,99 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, ScrollView, Image, StatusBar } from "react-native";
-import { Container, Content, Item, Input } from "native-base";
+import { StyleSheet, Text, View, ScrollView, Image, StatusBar, TouchableOpacity, TextInput } from "react-native";
+import { Container, Content, Button, Item } from "native-base";
 import { SimpleLineIcons } from "@expo/vector-icons";
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { connect } from "react-redux";
-import { Heading, Categoryheader, Carcard, Tophost, Destination, Earningcard, } from '@components';
-import configs from '@constants/configs';
-import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
-import API, { setClientToken } from '@utils/API';
-import i18n from '@utils/i18n';
+import { Loading, Carcard, Tophost, Destination, Earningcard } from '@components';
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
 
 class Main extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      search: isEmpty(this.props.route.params)
+        ? ""
+        : this.props.route.params.search,
+      data: [],
+      popularCar: [],
+      popularHosts: [],
+      todayFeeds: [],
+      topDestinations: [],
+    };
   }
 
-  // componentDidMount() {
-  //   const { user } = this.props;
-  //   if (!user[0]) {
-  //     this.props.navigation.navigate("SignIn");
-  //   }
-  //   console.log(users);
-  // }
+  async componentDidMount() {
+    await axios
+      .get("Mobile/Home")
+      .then((result) => this.setState({ data: result.data }))
+      .then(() =>
+        this.setState({
+          popularCar: this.state.data.popularCars,
+          popularHosts: this.state.data.popularHosts,
+          todayFeeds: this.state.data.todayFeeds,
+          topDestinations: this.state.data.topDestinations,
+        })
+      )
+      .catch((e) => console.log(e));
+  }
+
+  renderHeading() {
+    return (
+      <View style={{ flexDirection: "row", width: wp("100.0%"), height: 50 }}>
+        <View style={{ width: 80, padding: 10 }} />
+        <View style={{ width: wp("100.0%") - 160 }} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: 80,
+            padding: 10,
+          }}
+        >
+          <Button
+            transparent
+            onPress={() => this.props.navigation.navigate("Messages")}
+          >
+            <Icon
+              type="zocial"
+              name="email"
+              size={23}
+              color={colors.BLUE.TAB}
+            />
+          </Button>
+          <Button
+            transparent
+            onPress={() => this.props.navigation.navigate("Profile")}
+          >
+            <Icon
+              type="material-community"
+              name="account-circle"
+              size={23}
+              color={colors.BLUE.TAB}
+            />
+          </Button>
+        </View>
+      </View>
+    );
+  }
 
   render() {
     return (
       <Container>
         <StatusBar hidden />
-        <Heading
-          onMessage={() => this.props.navigation.navigate("Message")}
-          onProfile={() => this.props.navigation.navigate("Profile")}
-        />
-        <Content>
-          <ScrollView>
+        {this.renderHeading()}
             <View style={styles.searchSection}>
               <Item rounded style={styles.searchbox}>
-                <Input
-                  placeholder="Location, place or category"
+                <TextInput
+                  value={this.state.search.formatted_address}
+                  placeholder={i18n.translate("Location place or category")}
                   style={styles.searchtxt}
                   onFocus={() => this.props.navigation.navigate("Search")}
                 />
@@ -52,34 +106,81 @@ class Main extends Component {
                 />
               </Item>
             </View>
-            <View style={styles.Category}>
-              <Categoryheader head1="Popular" head2="Cars" />
+        <Content style={{marginTop: 10}}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Popular Cars")}
+              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Car')}>
+                <Text style={{ fontSize: 14 }}>
+                  {i18n.translate("View all")}
+                </Text>
+              </TouchableOpacity>
             </View>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={{ flexDirection: "row" }}>
-                  <Carcard />
-                  <Carcard />
-                  <Carcard />
-                </View>
-              </ScrollView>
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {this.state.popularCar.map((item, key) => {
+                return (
+                  <Carcard
+                    key={key}
+                    name={item.name}
+                    image={item.image}
+                    price={item.price}
+                    onPress={() => this.props.navigation.navigate('CarDetail')}
+                  />
+                );
+              })}
+            </ScrollView>
 
-            <View style={styles.Category}>
-              <Categoryheader head1="Top" head2="Host" />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Top Host")}
+              </Text>
             </View>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Tophost />
-                <Tophost />
-                <Tophost />
-              </ScrollView>
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {this.state.popularHosts.map((item, key) => {
+                return (
+                  <Tophost
+                    key={key}
+                    name={item.name}
+                    image={item.image}
+                    bookings={item.bookings}
+                  />
+                );
+              })}
+            </ScrollView>
 
-            <View style={[styles.Category, { marginTop: 10 }]}>
-              <Categoryheader head1="Today's" head2="Feed" />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Todays Feed")}
+              </Text>
             </View>
-
             <View>
               <Image
                 source={require("@assets/images/car.jpg")}
@@ -90,31 +191,71 @@ class Main extends Component {
               <Text style={styles.cartext2}>Ferrari New Launch 2020</Text>
             </View>
 
-            <View style={[styles.Category, { marginTop: 10 }]}>
-              <Categoryheader head1="Popular" head2="Destination" />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Popular Destination")}
+              </Text>
+              <TouchableOpacity>
+                <Text style={{ fontSize: 14 }}>
+                  {i18n.translate("View all")}
+                </Text>
+              </TouchableOpacity>
             </View>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Destination />
-                <Destination />
-                <Destination />
-              </ScrollView>
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {this.state.topDestinations.map((item, key) => {
+                return (
+                  <Destination
+                    key={key}
+                    name={item.name}
+                    image={item.image}
+                    // onPress={() => this.props.navigation.navigate('Car')}
+                  />
+                );
+              })}
+            </ScrollView>
 
-            <View style={[styles.Category, { marginTop: 10 }]}>
-              <Categoryheader head1="Start earning " head2="today" />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Start earning today")}
+              </Text>
             </View>
-            <View>
-              <Earningcard />
-            </View>
+            <Earningcard
+              onPress={() => this.props.navigation.navigate('Vehicle')} />
 
-            <View style={[styles.Category, { marginTop: 10 }]}>
-              <Categoryheader head1="Go for " head2="ride" />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginLeft: 15,
+                marginRight: 15,
+                marginTop: 20,
+                marginBottom: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                {i18n.translate("Go for ride")}
+              </Text>
             </View>
-            <View>
-              <Earningcard />
-            </View>
-          </ScrollView>
+            <Earningcard
+              onPress={() => this.props.navigation.navigate('Vehicle')} />
         </Content>
       </Container>
     );
@@ -132,7 +273,7 @@ const styles = StyleSheet.create({
   searchtxt: {
     marginLeft: 10,
     fontSize: 15,
-    width: "100%",
+    width: "90%",
   },
   Category: {
     marginVertical: 10,
@@ -183,10 +324,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return {
-    user: state.account.user,
-  }
-}
-
-export default connect(mapStateToProps, undefined)(Main);
+export default Main;

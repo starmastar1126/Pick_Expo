@@ -1,9 +1,9 @@
 {
-  "expoServerNgrokUrl": "https://yt-dy9.ministar1126.master.exp.direct",
-  "packagerNgrokUrl": "https://packager.yt-dy9.ministar1126.master.exp.direct",
-  "ngrokPid": 27480,
+  "expoServerNgrokUrl": "https://qn-rnm.technovierapp.latest.exp.direct",
+  "packagerNgrokUrl": "https://packager.qn-rnm.technovierapp.latest.exp.direct",
+  "ngrokPid": 4144,
   "devToolsPort": 19002,
   "expoServerPort": 19000,
-  "packagerPort": null,
-  "packagerPid": null
+  "packagerPort": 19001,
+  "packagerPid": 36272
 }

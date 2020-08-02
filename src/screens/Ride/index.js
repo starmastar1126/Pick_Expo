@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import { StatusBar, Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity } from "react-native";
-import { Container, Content, Button } from "native-base";
+import MapView from "react-native-maps";
+
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import MapView from "react-native-maps";
-import { EvilIcons } from "@expo/vector-icons";
-
+import { connect } from "react-redux";
+import { Loading } from '@components';
+import { isEmpty } from '@constants/functions';
 import configs from '@constants/configs';
 import { themes, colors } from '@constants/themes';
 import { images, icons } from '@constants/assets';
-import API, { setClientToken } from '@utils/API';
+import axios, { setClientToken } from '@utils/axios';
 import i18n from '@utils/i18n';
 
-export class Ride extends Component {
+class Ride extends Component {
   constructor() {
     super();
     this.state = {
@@ -29,8 +30,7 @@ export class Ride extends Component {
 
   render() {
     return (
-      <Container>
-        <Content>
+      <View>
           <StatusBar hidden />
           <MapView
             style={styles.mapStyle}
@@ -38,14 +38,12 @@ export class Ride extends Component {
             // annotations={this.state.region}
             onPress={(e) => this.setState({ marker: e.nativeEvent.coordinate })}
           >
-            {/* {this.state.marker && ( */}
             <MapView.Marker
               pinColor="blue"
               coordinate={this.state.region}
               title={i18n.translate('Ocean Mall')}
               description={"Lahore, Pakistan"}
             />
-            {/* )} */}
           </MapView>
           <View style={styles.paramView}>
             <TouchableOpacity>
@@ -79,13 +77,12 @@ export class Ride extends Component {
               </View>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-              <TouchableOpacity style={styles.nextButton} onPress={() => this.props.navigation.navigate('MatchScreen')}>
+              <TouchableOpacity style={styles.nextButton}>
                 <Text style={{ fontSize: 16, color: colors.WHITE }}>{i18n.translate('Find Ride')}</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Content>
-      </Container>
+        </View>
     );
   }
 }
@@ -105,8 +102,8 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
     position: "absolute",
+    bottom: 50,
     padding: 20,
-    bottom: 76,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: "white",
@@ -117,7 +114,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
-
     elevation: 20,
   },
   paramView: {

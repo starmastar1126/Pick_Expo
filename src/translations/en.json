@@ -174,7 +174,6 @@
   "GST": "GST",
   "Estimated Tax": "Estimated Tax",
   "Security Deposit": "Security Deposit",
-  "Promo": "Apply Promo",
   "$350/day": "$350/day",
   "Choose Date": "Choose Date",
   "Choose": "Choose",
@@ -312,5 +311,17 @@
   "End My Trip": "End My Trip",
   "Vehicle Summary": "Vehicle Summary",
   "Rent Now": "Rent Now",
-  "Guests Responses": "Guests Responses"
+  "Guests Responses": "Guests Responses",
+
+  "Popular Cars": "Popular Cars",
+  "Top Host": "Top Host",
+  "Todays Feed": "Today's Feed",
+  "Popular Destination": "Popular Destination",
+  "Start earning today": "Start earning today",
+  "Go for ride": "Go for ride",
+  "Location place or category": "Location, place or category",
+  "Log out": "Log out",
+  "See Detail": "See Detail",
+  "All Services": "All Services",
+  "Top Agents": "Top Agents"
 }

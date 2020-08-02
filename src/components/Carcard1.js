@@ -1,13 +1,31 @@
 import React from "react";
 import { Text, View, Image } from "react-native";
 import { Button } from "native-base";
+import { Entypo } from "@expo/vector-icons";
 
-export default function Carcard1() {
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { Icon } from "react-native-elements";
+import { connect } from "react-redux";
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
+
+export default function Carcard1({ key, name, image, price, onPress }) {
   return (
-    <View>
+    <View key={key}>
       <View style={{ marginLeft: 10 }}>
         <Image
-          source={require("@assets/images/driver3.jpg")}
+          source={
+            isEmpty(image)
+              ? require("@assets/images/download.jpeg")
+              : { uri: configs.resourceURL + image }
+          }
           style={{ width: 200, height: 220, borderRadius: 20 }}
         />
         <Text
@@ -19,7 +37,7 @@ export default function Carcard1() {
             marginTop: 20,
           }}
         >
-          Chauffeur
+          {name}
         </Text>
 
         <Text
@@ -31,7 +49,7 @@ export default function Carcard1() {
             marginTop: 40,
           }}
         >
-          SAR12/km
+          SAR{price}/DAY
         </Text>
         <Button
           style={{
@@ -45,6 +63,12 @@ export default function Carcard1() {
           <Text style={{ color: "white", fontWeight: "bold", padding: 10 }}>
             Request Now
           </Text>
+          <Entypo
+            name="chevron-small-right"
+            size={24}
+            color="white"
+            style={{ marginTop: 6 }}
+          />
         </Button>
       </View>
     </View>

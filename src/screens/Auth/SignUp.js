@@ -13,7 +13,21 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 
-export class SignUpScreen extends Component {
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { Icon } from "react-native-elements";
+import { connect } from "react-redux";
+import { Loading } from "@components";
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
+
+class SignUpScreen extends Component {
   constructor() {
     super();
     this.state = {
@@ -22,6 +36,7 @@ export class SignUpScreen extends Component {
       pass: "",
       phone: "",
       image: null,
+      loading: false,
     };
   }
 
@@ -48,38 +63,145 @@ export class SignUpScreen extends Component {
       });
       if (!result.cancelled) {
         this.setState({ image: result.uri });
+        this.uploadImage();
       }
-      console.log(result);
     } catch (E) {
       console.log(E);
     }
   };
 
-  uploadData = () => {
-    const { name, email, pass, phone, image } = this.state;
-    let base_url = "";
-    let uploadData = new FormData();
-    uploadData.append("Submit", "ok");
-    uploadData.append("Name", name);
-    uploadData.append("Email", email);
-    uploadData.append("Password", pass);
-    uploadData.append("Phone", phone);
-    uploadData.append("File", {
+  uploadImage = async () => {
+    let UploadData = new FormData();
+    UploadData.append("file", {
+      uri: this.state.image,
       type: "image/jpg",
-      uri: image,
-      name: "uploadimage.jpg",
+      name: this.state.filename || `filename1.jpg`,
     });
-    //   fetch(base_url,{
-    //       method:"POST",
-    //       headers:{
-    //           "accept":"application/json",
-    //           "content-type":"application/json"
-    //       },
-    //       body:uploadData
-    //   })
-    console.log(uploadData);
+    UploadData.append("folder", "vehicles");
+
+    await fetch("https://6cbd535.online-server.cloud/api/Shared/upload", {
+      method: "post",
+      headers: {
+        Accept: "application/x-www-form-urlencoded",
+      },
+      body: UploadData,
+    })
+      .then((results) => results.text())
+      .then((response) => this.setState({ imagepath: response }))
+      .then(() => console.log("Image Path: ", this.state.imagepath))
+      .catch((e) => console.log("err: ", e));
   };
+
+  uploadData = async () => {
+    const { name, email, pass, phone, image } = this.state;
+
+    if (!name) {
+      alert("Please enter name!");
+      return;
+    }
+    if (!email) {
+      alert("Please enter email!");
+      return;
+    }
+    if (!pass) {
+      alert("Please enter password!");
+      return;
+    }
+    if (!phone) {
+      alert("Please enter phone number!");
+      return;
+    }
+
+    this.setState({ loading: true });
+
+    // let userData = {
+    //   id: 0,
+    //   firstName: name,
+    //   middleName: "string",
+    //   lastName: "string",
+    //   contactNumber: phone,
+    //   countryCode: "string",
+    //   email: email,
+    //   password: pass,
+    //   roleId: 0,
+    //   profilePicture: image ? image : "",
+    //   drivingLicense: "string",
+    //   issueCountry: "string",
+    //   drivingLicenseFirstName: "string",
+    //   drivingLicenseMiddleName: "string",
+    //   drivingLicenseLastName: "string",
+    //   drivingLicenseImage: "string",
+    //   drivingLicenseExpiryDate: "2020-07-15T08:30:52.669Z",
+    //   deviceType: Platform.OS,
+    //   deviceToken: "string",
+    //   loginType: "string",
+    //   socialId: "string",
+    //   otpNumber: 0,
+    // };
+
+    await axios
+      .post("User", {
+        id: 0,
+        firstName: name,
+        middleName: "",
+        lastName: "",
+        contactNumber: phone,
+        countryCode: "",
+        email: email,
+        password: pass,
+        roleId: 0,
+        profilePicture: image ? image : "",
+        drivingLicense: "",
+        issueCountry: "",
+        drivingLicenseFirstName: "",
+        drivingLicenseMiddleName: "",
+        drivingLicenseLastName: "",
+        drivingLicenseImage: "",
+        drivingLicenseExpiryDate: "",
+        deviceType: Platform.OS,
+        deviceToken: "",
+        loginType: "",
+        socialId: "",
+        otpNumber: 0,
+      })
+      .then((res) => {
+        if (res.status == 200) {
+          this.setState({ loading: false });
+          alert("SignUp Successfull");
+          this.setState({
+            name: "",
+            email: "",
+            pass: "",
+            phone: "",
+            image: null,
+          });
+        } else {
+          this.setState({ loading: false });
+          alert("SignUp Fail");
+          this.setState({
+            name: "",
+            email: "",
+            pass: "",
+            phone: "",
+            image: null,
+          });
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: false });
+        console.log(error.message);
+        this.setState({
+          name: "",
+          email: "",
+          pass: "",
+          phone: "",
+          image: null,
+        });
+      });
+  };
+
   render() {
+    const { name, email, pass, phone } = this.state;
     Imageview = () => {
       const { image } = this.state;
       if (!image) {
@@ -132,12 +254,16 @@ export class SignUpScreen extends Component {
             placeholder="Name"
             style={styles.txtInput}
             placeholderTextColor="white"
+            value={name}
+            onChangeText={(value) => this.setState({ name: value })}
           />
           <TextInput
             keyboardType="email-address"
             placeholder="Email Address"
             style={styles.txtInput}
             placeholderTextColor="white"
+            value={email}
+            onChangeText={(value) => this.setState({ email: value })}
           />
           <TextInput
             keyboardType="visible-password"
@@ -145,12 +271,16 @@ export class SignUpScreen extends Component {
             style={styles.txtInput}
             placeholderTextColor="white"
             secureTextEntry={true}
+            value={pass}
+            onChangeText={(value) => this.setState({ pass: value })}
           />
           <TextInput
             keyboardType="phone-pad"
             placeholder="Phone number"
             style={styles.txtInput}
             placeholderTextColor="white"
+            value={phone}
+            onChangeText={(value) => this.setState({ phone: value })}
           />
           <TouchableOpacity
             style={styles.loginBtn}
@@ -174,6 +304,7 @@ export class SignUpScreen extends Component {
             resizeMode="cover"
           />
         </View>
+        <Loading loading={this.state.loading} />
       </View>
     );
   }

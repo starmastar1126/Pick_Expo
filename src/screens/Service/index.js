@@ -5,23 +5,50 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { Container, Content, Item, Input } from "native-base";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { Icon } from "react-native-elements";
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { Heading, Categoryheader, Carcard1, Tophost, Destination, Earningcard, } from '@components';
+import { Loading, Carcard1, Tophost, Earningcard } from "@components";
+import { isEmpty } from "@constants/functions";
 import configs from "@constants/configs";
 import { themes, colors } from "@constants/themes";
 import { images, icons } from "@constants/assets";
-import API, { setClientToken } from "@utils/API";
+import axios, { setClientToken } from "@utils/axios";
 import i18n from "@utils/i18n";
 
-export default class Service extends React.Component {
+class Service extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      search: isEmpty(this.props.route.params)
+        ? ""
+        : this.props.route.params.search,
+      data: [],
+      allServices: [],
+      popularServices: [],
+      topAgents: [],
+    };
+  }
+  async componentDidMount() {
+    await axios
+      .get("Mobile/Services")
+      .then((result) => this.setState({ data: result.data }))
+      .then(() =>
+        this.setState({
+          allServices: this.state.data.allServices,
+          popularServices: this.state.data.popularServices,
+          topAgents: this.state.data.topAgents,
+        })
+      )
+      .catch((e) => console.log(e));
   }
   render() {
     return (
@@ -37,110 +64,176 @@ export default class Service extends React.Component {
           <Text style={{ fontSize: 18, fontWeight: "500" }}>Pick Services</Text>
         </View>
         <Content>
-          <ScrollView>
-            <View style={styles.searchSection}>
-              <Item rounded style={styles.searchbox}>
-                <Input
-                  placeholder={i18n.translate("Search your desired service")}
-                  style={styles.searchtxt}
-                />
-                <SimpleLineIcons
-                  name="magnifier"
-                  size={20}
-                  color="black"
-                  style={styles.searchicon}
-                  onPress={() => this.props.navigation.navigate("RideMap1")}
-                />
-              </Item>
-            </View>
-
-            <View style={styles.Category}>
-              <Categoryheader
-                head1={i18n.translate("Popular")}
-                head2={i18n.translate("Services")}
+          <View style={styles.searchSection}>
+            <Item rounded style={styles.searchbox}>
+              <Input
+                placeholder={i18n.translate("Search your desired service")}
+                style={styles.searchtxt}
+                onFocus={() => this.props.navigation.navigate("ServiceMap")}
               />
-            </View>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={{ flexDirection: "row" }}>
-                  <Carcard1 />
-                  <Carcard1 />
-                  <Carcard1 />
-                </View>
-              </ScrollView>
-            </View>
-            <View style={styles.Category}>
-              <Categoryheader
-                head1={i18n.translate("All")}
-                head2={i18n.translate("Service")}
+              <SimpleLineIcons
+                name="magnifier"
+                size={20}
+                color="black"
+                style={styles.searchicon}
+                onPress={() => this.props.navigation.navigate("ServiceMap")}
               />
-            </View>
-            <View style={styles.params1}>
-              <TouchableOpacity key={1} style={styles.item1}>
-                <Icon
-                  name="car-hatchback"
-                  type="material-community"
-                  color={colors.BLUE.TAB}
-                  size={35}
-                />
-                <Text style={{ fontSize: 10 }}>{i18n.translate("Tovy")}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity key={2} style={styles.item1}>
-                <Icon
-                  name="shopify"
-                  type="fontisto"
-                  color={colors.BLUE.TAB}
-                  size={30}
-                />
-                <Text style={{ fontSize: 10 }}>
-                  {i18n.translate("Tire Shop")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity key={2} style={styles.item1}>
-                <Icon
-                  name="gas-station"
-                  type="material-community"
-                  color={colors.BLUE.TAB}
-                  size={35}
-                />
-                <Text style={{ fontSize: 10 }}>
-                  {i18n.translate("Gasonline")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity key={2} style={styles.item1}>
-                <Icon
-                  name="car-battery"
-                  type="font-awesome-5"
-                  color={colors.BLUE.TAB}
-                  size={35}
-                />
-                <Text style={{ fontSize: 10 }}>
-                  {i18n.translate("Battery")}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            </Item>
+          </View>
 
-            <View style={styles.Category}>
-              <Categoryheader
-                head1={i18n.translate("Top")}
-                head2={i18n.translate("Agents")}
-              />
-            </View>
-            <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Tophost />
-                <Tophost />
-                <Tophost />
-              </ScrollView>
-            </View>
-
-            <View style={[styles.Category, { marginTop: 10 }]}>
-              <Categoryheader head1={i18n.translate("Serve_Earn")} />
-            </View>
-            <View>
-              <Earningcard />
-            </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: 15,
+              marginRight: 15,
+              marginTop: 20,
+              marginBottom: 5,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              {i18n.translate("Popular Services")}
+            </Text>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {this.state.popularServices.map((item, key) => {
+              return (
+                <Carcard1
+                  key={key}
+                  name={item.name}
+                  image={item.image}
+                  price={item.rate}
+                />
+              );
+            })}
           </ScrollView>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: 15,
+              marginRight: 15,
+              marginTop: 20,
+              marginBottom: 5,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              {i18n.translate("All Services")}
+            </Text>
+          </View>
+
+          {/* <View style={styles.params1}>
+            <TouchableOpacity key={1} style={styles.item1}
+              onPress={() => this.props.navigation.navigate('ServiceDrivers')}>
+              <Icon
+                name="car-hatchback"
+                type="material-community"
+                color={colors.BLUE.TAB}
+                size={35}
+              />
+              <Text style={{ fontSize: 10 }}>{i18n.translate("Tovy")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity key={2} style={styles.item1}
+              onPress={() => this.props.navigation.navigate('ServiceDrivers')}>
+              <Icon
+                name="shopify"
+                type="fontisto"
+                color={colors.BLUE.TAB}
+                size={30}
+              />
+              <Text style={{ fontSize: 10 }}>
+                {i18n.translate("Tire Shop")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity key={3} style={styles.item1}
+              onPress={() => this.props.navigation.navigate('ServiceDrivers')}>
+              <Icon
+                name="gas-station"
+                type="material-community"
+                color={colors.BLUE.TAB}
+                size={35}
+              />
+              <Text style={{ fontSize: 10 }}>
+                {i18n.translate("Gasonline")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity key={4} style={styles.item1}
+              onPress={() => this.props.navigation.navigate('ServiceDrivers')}>
+              <Icon
+                name="car-battery"
+                type="font-awesome-5"
+                color={colors.BLUE.TAB}
+                size={35}
+              />
+              <Text style={{ fontSize: 10 }}>{i18n.translate("Battery")}</Text>
+            </TouchableOpacity>
+          </View> */}
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 10 }}>
+            {this.state.allServices.map((item, key) => {
+              return (
+                <TouchableOpacity key={key} style={styles.item1}
+                  onPress={() => this.props.navigation.navigate('ServiceDrivers')}>
+                  <Image
+                    source={
+                      isEmpty(item.image)
+                        ? require("@assets/images/download.jpeg")
+                        : { uri: configs.resourceURL + item.image }
+                    }
+                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                  />
+                  <Text style={{ fontSize: 10, marginTop: 5 }}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: 15,
+              marginRight: 15,
+              marginTop: 20,
+              marginBottom: 5,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              {i18n.translate("Top Agents")}
+            </Text>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {this.state.topAgents.map((item, key) => {
+              return (
+                <Tophost
+                  key={key}
+                  name={item.name}
+                  image={item.image}
+                  bookings={item.bookings}
+                />
+              );
+            })}
+          </ScrollView>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: 15,
+              marginRight: 15,
+              marginTop: 20,
+              marginBottom: 5,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>
+              {i18n.translate("Serve_Earn")}
+            </Text>
+          </View>
+          <Earningcard
+            onPress={() => this.props.navigation.navigate('Vehicle')} />
         </Content>
       </Container>
     );
@@ -153,10 +246,10 @@ const styles = StyleSheet.create({
     marginLeft: 18,
   },
   searchicon: {
-    marginRight: 20,
+    marginRight: 5,
   },
   searchtxt: {
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 15,
   },
   Category: {
@@ -228,3 +321,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
 });
+
+export default Service;

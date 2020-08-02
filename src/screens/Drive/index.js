@@ -1,15 +1,17 @@
 import React from "react";
 import { StatusBar, StyleSheet, ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
-import { Container, Content, Item, Input } from "native-base";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { Icon } from "react-native-elements";
+import { Container, Content } from "native-base";
 
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
 import { connect } from "react-redux";
-import configs from "@constants/configs";
-import { themes, colors } from "@constants/themes";
-import { images, icons } from "@constants/assets";
-import API, { setClientToken } from "@utils/API";
-import i18n from "@utils/i18n";
+import { Loading } from '@components';
+import { isEmpty } from '@constants/functions';
+import configs from '@constants/configs';
+import { themes, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
+import axios, { setClientToken } from '@utils/axios';
+import i18n from '@utils/i18n';
 
 const data = [
   { step: 1, title: "Requested a car on Sunday 22 Mar" },
@@ -276,7 +278,7 @@ class Drive extends React.Component {
                 </View>
                 <TouchableOpacity style={styles.rentButton}>
                   <Text style={{ fontSize: 11, color: colors.WHITE }}>
-                    {i18n.translate("Rent Now")}
+                    {i18n.translate("See Detail")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -375,7 +377,7 @@ class Drive extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.viewButton}
-            onPress={() => this.props.navigation.navigate("LockScreen")}
+            onPress={() => this.props.navigation.navigate("DriveLock")}
           >
             <Text style={{ fontSize: 11, color: colors.WHITE }}>View</Text>
           </TouchableOpacity>
@@ -386,14 +388,13 @@ class Drive extends React.Component {
   renderButtons() {
     return (
       <View style={styles.booking1}>
-        <TouchableOpacity style={[styles.button, { marginBottom: 10 }]}>
+        <TouchableOpacity style={[styles.button, { marginBottom: 10 }]} onPress={() => this.props.navigation.navigate('Search')}>
           <Text style={{ fontSize: 13, color: colors.WHITE }}>
             Rent Your Ride
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.BLACK }]}
-          onPress={() => this.props.navigation.navigate("LockScreen")}
         >
           <Text style={{ fontSize: 13, color: colors.WHITE }}>
             List Your Car
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    bottom: 70,
+    bottom: 10,
     marginLeft: 20,
     marginRight: 20,
     padding: 10,

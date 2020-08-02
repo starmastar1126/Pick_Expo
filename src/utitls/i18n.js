@@ -15,7 +15,7 @@ const rtlLanguages = [
 
 const translate = (key, config) => {
   let msg = i18n.t(key, config)
-  console.log('msg: ' + msg)
+  // console.log('msg: ' + msg)
   if (missingTranslationRegex.test(msg)) {
     msg = i18n.t(key, 'en')
   }

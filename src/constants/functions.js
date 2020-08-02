@@ -36,6 +36,10 @@ export const validateLength = (value, length) => {
     return false;
 }
 
+export const isEmpty = (param) => {
+    return param == undefined || param == null || (typeof param === "string" && param == "");
+}
+
 export function SendPushNotification(token, title, body, data) {
     axios({
         method: 'POST',

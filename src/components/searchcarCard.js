@@ -2,12 +2,13 @@ import React from "react";
 import { Text, View, Image } from "react-native";
 import { Button } from "native-base";
 import { Entypo } from "@expo/vector-icons";
+import { isEmpty } from "@constants/functions";
 
-export default function searchcarCard({ Carname, Price }) {
+export default function SearchCarCard({ Carname, Price, onPress }) {
   return (
     <View style={{ marginLeft: 10 }}>
       <Image
-        source={require("../assets/ferrari.jpeg")}
+        source={require("@assets/images/ferrari.jpeg")}
         style={{ width: "97%", height: 160, borderRadius: 20 }}
         resizeMode="cover"
       />
@@ -44,6 +45,7 @@ export default function searchcarCard({ Carname, Price }) {
           borderTopLeftRadius: 20,
           borderBottomEndRadius: 19,
         }}
+        onPress={onPress}
       >
         <Text style={{ color: "white", fontWeight: "bold", padding: 10 }}>
           Rent now

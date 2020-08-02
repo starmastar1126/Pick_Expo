@@ -3,7 +3,7 @@ import { Text, View, Image } from "react-native";
 import { Button } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 
-export default function Earningcard() {
+export default function Earningcard({onPress}) {
   return (
     <View>
       <View style={{ marginLeft: 10 }}>
@@ -44,6 +44,7 @@ export default function Earningcard() {
             borderTopLeftRadius: 20,
             borderBottomEndRadius: 19,
           }}
+          onPress={onPress}
         >
           <Text style={{ color: "white", fontWeight: "bold", padding: 10 }}>
             Become a host

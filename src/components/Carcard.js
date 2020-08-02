@@ -1,20 +1,26 @@
 import React from "react";
-import {
-  Text,
-  View,
-  Image,
-} from "react-native";
-import {
-  Button,
-} from "native-base";
+import { Text, View, Image } from "react-native";
+import { Button } from "native-base";
 import { Entypo } from "@expo/vector-icons";
 
-export default function Carcard() {
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
+
+export default function Carcard({ key, name, image, price, onPress }) {
   return (
-    <View>
+    <View key={key}>
       <View style={{ marginLeft: 10 }}>
         <Image
-          source={require("@assets/images/download.jpeg")}
+          source={
+            isEmpty(image) ? require("@assets/images/download.jpeg") : {uri: configs.resourceURL + image}
+          }
           style={{ width: 200, height: 220, borderRadius: 20 }}
         />
         <Text
@@ -26,7 +32,7 @@ export default function Carcard() {
             marginTop: 20,
           }}
         >
-          Audi A6
+          {name}
         </Text>
 
         <Text
@@ -38,7 +44,7 @@ export default function Carcard() {
             marginTop: 40,
           }}
         >
-          SAR350/DAY
+          SAR{price}/DAY
         </Text>
         <Button
           style={{
@@ -48,6 +54,7 @@ export default function Carcard() {
             borderTopLeftRadius: 20,
             borderBottomEndRadius: 19,
           }}
+          onPress={onPress}
         >
           <Text style={{ color: "white", fontWeight: "bold", padding: 10 }}>
             Rent Now

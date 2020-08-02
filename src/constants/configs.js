@@ -1,5 +1,5 @@
 export default {
-    baseURL: "http://xxxxx.com/",
-    jsonURL: "http://xxxxx.com/api/",
-    dataURL: "http://xxxxx.com/storage/data/",
+    baseURL: "https://6cbd535.online-server.cloud",
+    apiURL: "https://6cbd535.online-server.cloud/api/",
+    resourceURL: "https://6cbd535.online-server.cloud/resources/images",
 }

@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-  Dimensions,
-  TextInput,
-} from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Alert, Modal, StyleSheet, Text, TouchableHighlight, View, Dimensions, TextInput } from "react-native";
 const WIDTH = Dimensions.get("screen").width;
 
 const TimeModel = ({

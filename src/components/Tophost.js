@@ -1,53 +1,49 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from "react-native";
-import {
-  Body,
-  Card,
-} from "native-base";
+import { StyleSheet, Text, View, Image } from "react-native";
+import { Body, Card } from "native-base";
 
-import { colors } from "@constants/themes";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { Loading, Rating } from '@components';
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
 
-const Tophost = () => {
+const Tophost = ({ key, name, image, bookings }) => {
   return (
-    <View>
+    <View key={key}>
       <View style={{ flexDirection: "row", marginLeft: 10, elevation: 20 }}>
         <Card style={{ borderRadius: 20 }}>
           <Body>
             <View style={{ flexDirection: "row", width: 200, height: 120 }}>
               <Image
-                source={require("@assets/images/60093.jpg")}
+                source={isEmpty(image) ? require("@assets/images/avatar.jpg") : {uri: configs.resourceURL + "/" + image}}
                 style={{
                   width: 80,
                   height: 80,
                   borderRadius: 50,
                   alignSelf: "center",
+                  marginLeft: 10,
+                  marginRight: 10,
                 }}
               />
               <View style={{ width: 100 }}>
                 <View
                   style={{
                     marginTop: 10,
+                    marginRight: 10,
                     alignSelf: "flex-end",
                   }}
                 >
-                  <View style={styles.ratingview}>
-                    <View style={styles.rating} />
-                    <View style={styles.rating} />
-                    <View style={styles.rating} />
-                    <View style={styles.rating} />
-                    <View style={styles.rating} />
-                  </View>
+                  <Rating rating={3.5} />
                 </View>
-                <Text style={{ marginTop: 30, fontWeight: "600" }}>
-                  Uzair Khan
-                </Text>
+                <Text style={{ marginTop: 30, fontWeight: "600" }}>{name}</Text>
                 <Text style={{ fontWeight: "300", fontSize: 10 }}>
-                  100 Offers
+                  {bookings} Offers
                 </Text>
               </View>
             </View>

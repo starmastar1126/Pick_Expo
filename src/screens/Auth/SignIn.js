@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  AsyncStorage,
   View,
   Text,
   StyleSheet,
@@ -17,7 +18,20 @@ import * as Crypto from "expo-crypto";
 import * as AppAuth from "expo-app-auth";
 import * as GoogleSignIn from "expo-google-sign-in";
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
+import { setUser } from "@modules/account/actions";
+import { Loading } from "@components";
+import { isEmpty } from "@constants/functions";
+import configs from "@constants/configs";
+import { themes, colors } from "@constants/themes";
+import { images, icons } from "@constants/assets";
+import axios, { setClientToken } from "@utils/axios";
+import i18n from "@utils/i18n";
 
 const { URLSchemes } = AppAuth;
 
@@ -28,16 +42,18 @@ class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       phoneNumber: null,
       verificationId: null,
       verificationCode: null,
-      email: "",
-      password: "",
+      email: "hamza.tariq@technovier.com",
+      password: "Hamza1234",
     };
   }
   async componentDidMount() {
     await GoogleSignIn.initAsync({
-      clientId: "255238314976-l063tsikif1d8it445r56moobi45b5ae.apps.googleusercontent.com"
+      clientId:
+        "255238314976-l063tsikif1d8it445r56moobi45b5ae.apps.googleusercontent.com",
     });
   }
 
@@ -133,30 +149,32 @@ class SignIn extends Component {
   }
 
   SignInReq = async () => {
-    this.props.navigation.navigate("App");
-    // const { email, password } = this.state;
-    // await fetch("https://6cbd535.online-server.cloud/api/Auth/Login", {
-    //   method: "POST",
-    //   headers: {
-    //     accept: "application/json",
-    //     "Content-type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     userName: email,
-    //     password: password,
-    //     deviceType: Platform.OS,
-    //   }),
-    // })
-    //   .then((result) => result.json())
-    //   .then((response) => {
-    //     if (!response.StatusCode) {
-    //       this.props.setUser(response);
-    //       this.props.navigation.navigate("Main");
-    //     } else {
-    //       alert(response.Message);
-    //     }
-    //   })
-    //   .catch((e) => console.log(e));
+    const { email, password } = this.state;
+    this.setState({ loading: true });
+    await axios
+      .post("Auth/Login", {
+        userName: email,
+        password: password,
+        deviceType: Platform.OS,
+      })
+      .then((res) => {
+        console.log("Login Res: ", res);
+        if (res.status == 200) {
+          setClientToken(res.data.token);
+          AsyncStorage.setItem("token", res.data.token);
+          AsyncStorage.setItem("logged", "true");
+          AsyncStorage.setItem("user_info", JSON.stringify(res.data.userInfo));
+          this.props.setUser(res.data.userInfo);
+          this.setState({ loading: false });
+          this.props.navigation.navigate("App");
+        } else {
+          this.setState({ loading: false });
+        }
+      })
+      .catch((error) => {
+        this.setState({ loading: false });
+        console.log(error.message);
+      });
   };
   render() {
     return (
@@ -175,6 +193,7 @@ class SignIn extends Component {
             placeholder="Email"
             style={styles.txtInput}
             placeholderTextColor="white"
+            value={this.state.email}
             onChangeText={(txt) => this.setState({ email: txt })}
           />
           <TextInput
@@ -182,6 +201,8 @@ class SignIn extends Component {
             placeholder="Password"
             style={styles.txtInput}
             placeholderTextColor="white"
+            secureTextEntry={true}
+            value={this.state.password}
             onChangeText={(txt) => this.setState({ password: txt })}
           />
           <TouchableOpacity
@@ -235,6 +256,7 @@ class SignIn extends Component {
             resizeMode="cover"
           />
         </View>
+        <Loading loading={this.state.loading} />
       </View>
     );
   }
@@ -336,12 +358,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (data) => {
-      dispatch(setUser(data))
-    }
-  }
-}
+      dispatch(setUser(data));
+    },
+  };
+};
 
 export default connect(undefined, mapDispatchToProps)(SignIn);

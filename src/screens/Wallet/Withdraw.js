@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
-
-import WalletHeader from "../../components/WalletHeader";
 import { LineChart } from "react-native-chart-kit";
-import PayItem from "../../components/PayItem";
+
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
+import { connect } from "react-redux";
+import { signOut } from "@modules/account/actions";
+import { Loading, PayItem } from '@components';
+import configs from '@constants/configs';
+import { themes, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
+import axios, { removeClientToken } from '@utils/axios';
+import i18n from '@utils/i18n';
+
 const WIDTH = Dimensions.get("window").width;
-import * as Localization from "expo-localization";
-import i18n from "i18n-js";
-import i8 from "../../services/i18n";
 
 const chartConfig = {
   color: (opacity = 0) => `rgba(0, 0, 255, ${opacity})`,
@@ -32,14 +38,30 @@ const data = {
   ],
 };
 
-export class Withdraw extends Component {
+class Withdraw extends Component {
+  renderHeading() {
+    return (
+      <View style={{ flexDirection: 'row', width: wp('100.0%'), height: 50 }}>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-start', width: 80, padding: 10 }}>
+          <Icon name="keyboard-backspace" type="material" size={24} onPress={() => this.props.navigation.goBack()} />
+        </View>
+        <View style={{ width: wp('100.0%') - 160, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: "300", marginTop: 5 }}>
+            Wallet
+          </Text>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-end', width: 80, padding: 10 }}>
+        </View>
+      </View>
+    );
+  };
   render() {
     return (
       <View style={{ backgroundColor: "white", flex: 1 }}>
-        <WalletHeader Heading={"Withdraw"} />
+      {this.renderHeading()}
         <View style={styles.txtView}>
           <Text style={{ fontSize: 15, fontWeight: "300" }}>
-            {i18n.t("Available funds")}
+            {i18n.translate("Available funds")}
           </Text>
           <Text style={styles.price}>SAR300,00.00</Text>
         </View>
@@ -61,7 +83,7 @@ export class Withdraw extends Component {
 
         <View style={styles.searchSection}>
           <Text style={styles.paidtxt}>
-            {i18n.t("How would you like to paid?")}
+            {i18n.translate("How would you like to paid?")}
           </Text>
           <View style={{ flex: 1, marginTop: 50 }}>
             <PayItem />
@@ -71,8 +93,6 @@ export class Withdraw extends Component {
     );
   }
 }
-
-export default Withdraw;
 
 const styles = StyleSheet.create({
   searchSection: {
@@ -114,3 +134,5 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
+
+export default Withdraw;
