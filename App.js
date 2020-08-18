@@ -1,38 +1,35 @@
-import React, { Component } from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from './src/store';
-import AppContainer from '@navigations';
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 
-import i18n from "@utils/i18n";
-i18n.setI18nConfig();
+import Mainscreen from "./Mainscreen";
+import SearchCar from "./screens/SearchCar";
+import Carscreen from "./screens/Carscreen";
+const Appnav = createStackNavigator(
+  {
+    Mainscreen: {
+      screen: Mainscreen,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    SearchCar: {
+      screen: SearchCar,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
 
-import * as firebase from "firebase";
-var firebaseConfig = {
-    apiKey: "AIzaSyCO0aoGEC4VNb74h7xFOQzDBIvZ5_Tsir4",
-    authDomain: "pick-aa5e2.firebaseapp.com",
-    databaseURL: "https://pick-aa5e2.firebaseio.com",
-    projectId: "pick-aa5e2",
-    storageBucket: "pick-aa5e2.appspot.com",
-    messagingSenderId: "255238314976",
-    appId: "1:255238314976:web:d7444a422ba09bcf53e985",
-    measurementId: "G-NH1HW72TDG",
-};
+    Carscreen: {
+      screen: Carscreen,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+  },
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+  {
+    initialRouteName: "SearchCar",
+  }
+);
 
-console.disableYellowBox = true;
-
-export default class App extends Component {
-    render() {
-        return (
-            <Provider store={store} >
-                <PersistGate loading={null} persistor={persistor}>
-                    <AppContainer />
-                </PersistGate>
-            </Provider>
-        );
-    }
-}
+export default createAppContainer(Appnav);
