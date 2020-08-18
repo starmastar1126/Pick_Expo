@@ -1,1 +1,0 @@
-# Pick_React_Mobile
