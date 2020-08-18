@@ -8,7 +8,7 @@ import {
   FontAwesome5,
 } from "@expo/vector-icons";
 import { Button, Footer, FooterTab } from "native-base";
-const Foot = () => {
+const Foot = (props) => {
   return (
     <Footer>
       <FooterTab
@@ -23,7 +23,9 @@ const Foot = () => {
         <Button>
           <FontAwesome name="car" size={24} color="grey" />
         </Button>
-        <Button>
+        <Button onPress={() => {
+          props.navigation.navigate('MyPickscreen');
+        }}>
           <MaterialCommunityIcons name="steering" size={24} color="grey" />
         </Button>
         <Button>

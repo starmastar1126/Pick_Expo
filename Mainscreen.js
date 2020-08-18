@@ -12,10 +12,15 @@ import Heading from "./components/Heading";
 import Foot from "./components/Foot";
 
 export default class App extends React.Component {
+  constructor(props){
+    super(props);
+  }
   render() {
     return (
       <Container>
-        <Heading />
+        <Heading
+          MsgScreen={() => this.props.navigation.navigate("MessageScreen")}
+        />
         <Content>
           <ScrollView>
             <View style={styles.searchview}>
@@ -96,7 +101,7 @@ export default class App extends React.Component {
             </View>
           </ScrollView>
         </Content>
-        <Foot />
+        <Foot props={this.props} />
       </Container>
     );
   }

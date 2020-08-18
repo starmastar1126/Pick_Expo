@@ -2,48 +2,10 @@ import React, { Component } from "react";
 import { Text, View, Image, StyleSheet, Dimensions } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Thumbnail, Button, Header, Content } from "native-base";
-import Foot from "../components/Foot";
 
+import Foot from "../components/Foot";
+import CarSliderImage from "../components/CarSliderImage";
 import { ScrollView } from "react-native-gesture-handler";
-const ComponentImage = () => {
-  return (
-    <View>
-      <Image
-        source={require("../assets/ferrari.jpeg")}
-        style={{ width: "100%", height: 260 }}
-        resizeMode="cover"
-      />
-      <Ionicons name="ios-arrow-round-back" size={35} style={styles.backbtn} />
-      <Text
-        style={{
-          position: "absolute",
-          color: "white",
-          fontWeight: "500",
-          marginLeft: 10,
-          marginTop: 20,
-          fontSize: 22,
-          bottom: 23,
-        }}
-      >
-        Ferrari XYZ
-      </Text>
-      <Text
-        style={{
-          position: "absolute",
-          color: "white",
-          fontWeight: "500",
-          marginLeft: 10,
-          marginTop: 20,
-          fontSize: 25,
-          bottom: 6,
-          alignSelf: "center",
-        }}
-      >
-        .....
-      </Text>
-    </View>
-  );
-};
 
 const Driver = () => {
   return (
@@ -78,7 +40,7 @@ export class Carscreen extends Component {
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Content>
           <ScrollView>
-            <ComponentImage />
+            <CarSliderImage />
             <View style={styles.cardrow}>
               <View style={styles.item}>
                 <MaterialCommunityIcons
@@ -153,12 +115,6 @@ export class Carscreen extends Component {
 export default Carscreen;
 
 const styles = StyleSheet.create({
-  backbtn: {
-    position: "absolute",
-    left: 10,
-    top: 20,
-    color: "rgb(255,255,255)",
-  },
   cardrow: {
     flexDirection: "row",
     justifyContent: "space-evenly",
